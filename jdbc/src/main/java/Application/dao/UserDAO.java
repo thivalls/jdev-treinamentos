@@ -30,7 +30,6 @@ public class UserDAO {
             while (result.next()) {
                 response.add(
                         new User(
-                                result.getLong("id"),
                                 result.getString("name"),
                                 result.getString("email")
                         )
@@ -46,16 +45,37 @@ public class UserDAO {
         return null;
     }
 
+    public User findById(Long id) {
+        try {
+            User response = new User();
+            String query = "select * from " + TABLE + " where id = " + id;
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet result = stmt.executeQuery();
+
+            while (result.next()) {
+                response.setId(result.getLong("id"));
+                response.setName(result.getString("name"));
+                response.setEmail(result.getString("email"));
+            }
+
+            return response;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public void insert(User user) {
         try {
-            String query = "insert into " + TABLE + " (id, name, email) values (?, ?, ?)";
+            // String query = "insert into " + TABLE + " (id, name, email) values (?, ?, ?)"; Alterado depois que adicionei autoincrement
+            String query = "insert into " + TABLE + " (name, email) values (?, ?)";
             PreparedStatement stmt = connection.prepareStatement(query);
-            stmt.setLong(1, user.getId());
-            stmt.setString(2, user.getName());
-            stmt.setString(3, user.getEmail());
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getEmail());
             stmt.execute();
             connection.commit();
-            System.out.println("adicionado com sucesso");
 
         } catch (Exception e) {
             try {
@@ -63,6 +83,35 @@ public class UserDAO {
             } catch (SQLException err) {
                 err.printStackTrace();
             }
+            e.printStackTrace();
+        }
+    }
+
+    public void update(User user) {
+        try {
+            String query = "update " + TABLE + " SET name = ? , email = ? where id = " + user.getId();
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.setString(1, user.getName());
+            stmt.setString(2, user.getEmail());
+            stmt.execute();
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException err) {
+                err.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(Long id) {
+        try {
+            String query = "delete from " + TABLE + " where id = " + id;
+            PreparedStatement stmt = connection.prepareStatement(query);
+            stmt.execute();
+            connection.commit();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
