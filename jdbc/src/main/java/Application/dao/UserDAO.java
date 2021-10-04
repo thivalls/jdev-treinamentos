@@ -5,7 +5,11 @@ import Application.models.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 public class UserDAO {
 
@@ -14,6 +18,32 @@ public class UserDAO {
 
     public UserDAO() {
         this.connection = DbConnection.getConnection();
+    }
+
+    public List<User> all() {
+        try {
+            String query = "select * from " + TABLE;
+            PreparedStatement stmt = connection.prepareStatement(query);
+            ResultSet result = stmt.executeQuery();
+            List<User> response = new ArrayList<>();
+
+            while (result.next()) {
+                response.add(
+                        new User(
+                                result.getLong("id"),
+                                result.getString("name"),
+                                result.getString("email")
+                        )
+                );
+            }
+
+            return response;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public void insert(User user) {
