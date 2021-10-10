@@ -1,7 +1,9 @@
 package Application;
 
+import Application.dao.PhoneDAO;
 import Application.dao.UserDAO;
 import Application.jdbc.DbConnection;
+import Application.models.Phone;
 import Application.models.User;
 
 import java.sql.Connection;
@@ -12,10 +14,15 @@ public class App {
     public static void main(String[] args) {
         System.out.println("Trabalhando com JDBC");
 
-        System.out.println("INSERT");
-        User user = new User("Julio", "julio@cesar.com.br");
-        UserDAO userDAO = new UserDAO();
-        userDAO.insert(user);
+//        System.out.println("INSERT");
+//        User user = new User("Roger", "roger@guedes.com.br");
+//        UserDAO userDAO = new UserDAO();
+//        userDAO.insert(user);
+
+        System.out.println("INSERT IN PHONE TABLE");
+        Phone phone = new Phone(5L, "cellphone", "111222333");
+        PhoneDAO phoneDAO = new PhoneDAO();
+        phoneDAO.insert(phone);
 
 
 //        System.out.println("Buscando todos registros");
