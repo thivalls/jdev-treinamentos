@@ -4,6 +4,7 @@ import Application.dao.PhoneDAO;
 import Application.dao.UserDAO;
 import Application.jdbc.DbConnection;
 import Application.models.Phone;
+import Application.models.PhoneResponse;
 import Application.models.User;
 
 import java.sql.Connection;
@@ -19,11 +20,18 @@ public class App {
 //        UserDAO userDAO = new UserDAO();
 //        userDAO.insert(user);
 
-        System.out.println("INSERT IN PHONE TABLE");
-        Phone phone = new Phone(5L, "cellphone", "111222333");
-        PhoneDAO phoneDAO = new PhoneDAO();
-        phoneDAO.insert(phone);
+//        System.out.println("INSERT IN PHONE TABLE");
+//        Phone phone = new Phone(7L, "casa", "555");
+//        PhoneDAO phoneDAO = new PhoneDAO();
+//        phoneDAO.insert(phone);
 
+        System.out.println("Listando telefones do usuario 7");
+        PhoneDAO phoneDAO = new PhoneDAO();
+        List<PhoneResponse> results = phoneDAO.getPhones(7L);
+
+        for (PhoneResponse phone : results) {
+            System.out.println(phone);
+        }
 
 //        System.out.println("Buscando todos registros");
 //        UserDAO userDAO = new UserDAO();

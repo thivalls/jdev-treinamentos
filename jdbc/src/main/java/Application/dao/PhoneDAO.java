@@ -2,10 +2,14 @@ package Application.dao;
 
 import Application.jdbc.DbConnection;
 import Application.models.Phone;
+import Application.models.PhoneResponse;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhoneDAO {
     private Connection connection;
@@ -33,5 +37,28 @@ public class PhoneDAO {
             e.printStackTrace();
         }
 
+    }
+
+    public List<PhoneResponse> getPhones(Long user_id) {
+        List<PhoneResponse> response = new ArrayList<>();
+        try {
+            String sql = "select name, number, type from " + TABLE + " as p INNER JOIN users as u on p.user_id = u.id WHERE u.id = " + user_id;
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            ResultSet result = stmt.executeQuery();
+
+            while (result.next()) {
+                response.add(new PhoneResponse(result.getString("name"), result.getString("number"), result.getString("type")));
+            }
+
+            return response;
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException err) {
+                err.printStackTrace();
+            }
+            e.printStackTrace();
+        }
+        return null;
     }
 }
